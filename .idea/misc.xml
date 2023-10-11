@@ -6,6 +6,8 @@
       <list>
         <option value="$PROJECT_DIR$/MySpring/pom.xml" />
         <option value="$PROJECT_DIR$/small-spring/pom.xml" />
+        <option value="$PROJECT_DIR$/small-spring-02/pom.xml" />
+        <option value="$PROJECT_DIR$/small-spring-01/pom.xml" />
       </list>
     </option>
   </component>
