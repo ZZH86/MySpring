@@ -40,4 +40,16 @@ public class ApiTest {
         UserService userService_singleton = (UserService) beanFactory.getBean("userService");
         userService_singleton.queryUserInfo();
     }
+
+    @Test
+    public void test_beanFactoryCglib(){
+        //1 初始化 BeanFactory
+        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
+        //2 注册 bean
+        BeanDefinition beanDefinition = new BeanDefinition(UserService.class);
+        beanFactory.registerBeanDefinition("userService", beanDefinition);
+        //3 获取 bean
+        UserService userService =(UserService) beanFactory.getBean("userService", "cao hui");
+        userService.queryUserInfo();
+    }
 }
