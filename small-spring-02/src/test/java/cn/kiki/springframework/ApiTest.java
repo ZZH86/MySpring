@@ -1,7 +1,12 @@
 package cn.kiki.springframework;
 
+import cn.kiki.springframework.bean.UserDao;
 import cn.kiki.springframework.bean.UserService;
+import cn.kiki.springframework.bean.UserService1;
+import cn.kiki.springframework.beans.PropertyValue;
+import cn.kiki.springframework.beans.PropertyValues;
 import cn.kiki.springframework.beans.factory.config.BeanDefinition;
+import cn.kiki.springframework.beans.factory.config.BeanReference;
 import cn.kiki.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.junit.Test;
 
@@ -51,5 +56,27 @@ public class ApiTest {
         //3 获取 bean
         UserService userService =(UserService) beanFactory.getBean("userService", "cao hui");
         userService.queryUserInfo();
+    }
+
+    @Test
+    public void test_BeanFactory_bean() {
+        // 1.初始化 BeanFactory
+        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
+
+        // 2. UserDao 注册
+        beanFactory.registerBeanDefinition("userDao", new BeanDefinition(UserDao.class));
+
+        // 3. UserService 设置属性[uId、userDao]
+        PropertyValues propertyValues = new PropertyValues();
+        propertyValues.addPropertyValue(new PropertyValue("uId", "10002"));
+        propertyValues.addPropertyValue(new PropertyValue("userDao",new BeanReference("userDao")));
+
+        // 4. UserService 注入bean
+        BeanDefinition beanDefinition = new BeanDefinition(UserService1.class, propertyValues);
+        beanFactory.registerBeanDefinition("userService1", beanDefinition);
+
+        // 5. UserService 获取bean
+        UserService1 userService1 = (UserService1) beanFactory.getBean("userService1");
+        userService1.queryUserInfo();
     }
 }
