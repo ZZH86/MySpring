@@ -1,5 +1,6 @@
 package cn.kiki.springframework;
 
+import cn.hutool.core.io.IoUtil;
 import cn.kiki.springframework.bean.UserDao;
 import cn.kiki.springframework.bean.UserService;
 import cn.kiki.springframework.bean.UserService1;
@@ -7,8 +8,16 @@ import cn.kiki.springframework.beans.PropertyValue;
 import cn.kiki.springframework.beans.PropertyValues;
 import cn.kiki.springframework.beans.factory.config.BeanDefinition;
 import cn.kiki.springframework.beans.factory.config.BeanReference;
+import cn.kiki.springframework.beans.factory.support.BeanDefinitionRegistry;
 import cn.kiki.springframework.beans.factory.support.DefaultListableBeanFactory;
+import cn.kiki.springframework.beans.factory.xml.XmlBeanDefinitionReader;
+import cn.kiki.springframework.core.io.DefaultResourceLoader;
+import cn.kiki.springframework.core.io.Resource;
+import org.junit.Before;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @Author hui cao
@@ -79,4 +88,55 @@ public class ApiTest {
         UserService1 userService1 = (UserService1) beanFactory.getBean("userService1");
         userService1.queryUserInfo();
     }
+
+    // 测试资源加载
+    private DefaultResourceLoader resourceLoader;
+
+    @Before
+    public void init() {
+        resourceLoader = new DefaultResourceLoader();
+    }
+
+    @Test
+    public void test_classpath() throws IOException {
+        Resource resource = resourceLoader.getResource("classpath:important.properties");
+        InputStream inputStream = resource.getInputStream();
+        String content = IoUtil.readUtf8(inputStream);
+        System.out.println(content);
+    }
+
+    @Test
+    public void test_file() throws IOException {
+        Resource resource = resourceLoader.getResource("src/test/resources/important.properties");
+        InputStream inputStream = resource.getInputStream();
+        String content = IoUtil.readUtf8(inputStream);
+        System.out.println(content);
+    }
+
+    @Test
+    public void test_url() throws IOException {
+        // 网络原因可能导致GitHub不能读取，可以放到自己的Gitee仓库。读取后可以从内容中搜索关键字；OLpj9823dZ
+        Resource resource = resourceLoader.getResource("https://github.com/fuzhengwei/small-spring/blob/main/important.properties");
+        InputStream inputStream = resource.getInputStream();
+        String content = IoUtil.readUtf8(inputStream);
+        System.out.println(content);
+    }
+
+    @Test
+    public void test_xml() {
+        //1 初始化 beanFactory
+        DefaultListableBeanFactory defaultListableBeanFactory = new DefaultListableBeanFactory();
+
+        //2 读取配置文件并注册Bean
+        XmlBeanDefinitionReader xmlBeanDefinitionReader = new XmlBeanDefinitionReader(defaultListableBeanFactory);
+
+        xmlBeanDefinitionReader.loadBeanDefinitions("classpath:spring.xml");
+
+        UserService1 userService1 = (UserService1) defaultListableBeanFactory.getBean("userService1");
+        userService1.queryUserInfo();
+
+
+    }
+
+
 }

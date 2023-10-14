@@ -7,7 +7,7 @@ import java.net.URL;
 
 /**
  * @Author hui cao
- * @Description:
+ * @Description: 默认资源加载器
  */
 public class DefaultResourceLoader implements ResourceLoader{
     @Override
