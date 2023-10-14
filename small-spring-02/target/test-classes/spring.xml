@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+
+    <bean id="userDao" class="cn.kiki.springframework.bean.UserDao"/>
+
+    <bean id="userService1" class="cn.kiki.springframework.bean.UserService1">
+        <property name="uId" value="10002"/>
+        <property name="userDao" ref="userDao"/>
+    </bean>
+
+</beans>
