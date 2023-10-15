@@ -4,6 +4,7 @@ import cn.hutool.core.io.IoUtil;
 import cn.kiki.springframework.bean.UserDao;
 import cn.kiki.springframework.bean.UserService;
 import cn.kiki.springframework.bean.UserService1;
+import cn.kiki.springframework.bean.UserService2;
 import cn.kiki.springframework.beans.PropertyValue;
 import cn.kiki.springframework.beans.PropertyValues;
 import cn.kiki.springframework.beans.factory.config.BeanDefinition;
@@ -11,6 +12,9 @@ import cn.kiki.springframework.beans.factory.config.BeanReference;
 import cn.kiki.springframework.beans.factory.support.BeanDefinitionRegistry;
 import cn.kiki.springframework.beans.factory.support.DefaultListableBeanFactory;
 import cn.kiki.springframework.beans.factory.xml.XmlBeanDefinitionReader;
+import cn.kiki.springframework.common.MyBeanFactoryPostProcessor;
+import cn.kiki.springframework.common.MyBeanPostProcessor;
+import cn.kiki.springframework.context.support.ClassPathXmlApplicationContext;
 import cn.kiki.springframework.core.io.DefaultResourceLoader;
 import cn.kiki.springframework.core.io.Resource;
 import org.junit.Before;
@@ -134,8 +138,42 @@ public class ApiTest {
 
         UserService1 userService1 = (UserService1) defaultListableBeanFactory.getBean("userService1");
         userService1.queryUserInfo();
+    }
 
+    /**
+     * 不用应用上下文
+     */
+    @Test
+    public void test_BeanFactoryPostProcessorAndBeanPostProcessor(){
+        // 1. 初始化 beanFactory
+        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
 
+        // 2. 读取配置文件注册 bean
+        new XmlBeanDefinitionReader(beanFactory).loadBeanDefinitions("classpath:spring.xml");
+
+        // 3. beanDefinition 加载完成 & Bean实例化之前，修改 BeanDefinition 的属性值
+        MyBeanFactoryPostProcessor myBeanFactoryPostProcessor = new MyBeanFactoryPostProcessor();
+        myBeanFactoryPostProcessor.postProcessBeanFactory(beanFactory);
+
+        // 4. Bean 实例化后修改 bean 属性信息
+        MyBeanPostProcessor myBeanPostProcessor = new MyBeanPostProcessor();
+        beanFactory.addBeanPostProcessor(myBeanPostProcessor);
+
+        // 5. 获取 bean 对象的调用方法
+        UserService2 userService2 = beanFactory.getBean("userService2", UserService2.class);
+        String s = userService2.queryUserInfo();
+        System.out.println(s);
+    }
+
+    @Test
+    public void test_xml2(){
+
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
+
+        UserService2 userService2 = applicationContext.getBean("userService2", UserService2.class);
+
+        String s = userService2.queryUserInfo();
+        System.out.println(s);
     }
 
 

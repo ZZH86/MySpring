@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans>
 
-    <bean id="userDao" class="cn.kiki.springframework.bean.UserDao"/>
+    <bean id="userDao1" class="cn.kiki.springframework.bean.UserDao1"/>
 
-    <bean id="userService1" class="cn.kiki.springframework.bean.UserService1">
-        <property name="uId" value="10002"/>
-        <property name="userDao" ref="userDao"/>
+    <bean id="userService2" class="cn.kiki.springframework.bean.UserService2">
+        <property name="uId" value="10001"/>
+        <property name="company" value="腾讯"/>
+        <property name="location" value="上海"/>
+        <property name="userDao1" ref="userDao1"/>
     </bean>
+
+    <bean class="cn.kiki.springframework.common.MyBeanPostProcessor"/>
+    <bean class="cn.kiki.springframework.common.MyBeanFactoryPostProcessor"/>
 
 </beans>

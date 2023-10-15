@@ -1,5 +1,6 @@
 package cn.kiki.springframework.beans.factory.support;
 
+import cn.kiki.springframework.beans.factory.config.BeanPostProcessor;
 import cn.kiki.springframework.beans.factory.config.SingletonBeanRegistry;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -8,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Author hui cao
  * @Description:
  */
-public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
+public abstract class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
 
     private final ConcurrentHashMap<String,Object> concurrentHashMap= new ConcurrentHashMap<>();
 
@@ -25,4 +26,6 @@ public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
     protected void addSingleton(String beanName, Object singletonObject){
         concurrentHashMap.put(beanName,singletonObject);
     }
+
+    public abstract void addBeanPostProcessor(BeanPostProcessor beanPostProcessor);
 }
