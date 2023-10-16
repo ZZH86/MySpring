@@ -3,7 +3,7 @@
 
     <bean id="userDao5" class="cn.kiki.springframework.bean.UserDao5" init-method="initDataMethod" destroy-method="destroyDataMethod"/>
 
-    <bean id="userService5" class="cn.kiki.springframework.bean.UserService5">
+    <bean id="userService6" class="cn.kiki.springframework.bean.UserService6">
         <property name="uId" value="10001"/>
         <property name="company" value="腾讯"/>
         <property name="location" value="上海"/>

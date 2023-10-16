@@ -4,6 +4,7 @@ import cn.kiki.springframework.beans.BeansException;
 import cn.kiki.springframework.beans.factory.BeanFactory;
 import cn.kiki.springframework.beans.factory.config.BeanDefinition;
 import cn.kiki.springframework.beans.factory.config.BeanPostProcessor;
+import cn.kiki.springframework.util.ClassUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,11 @@ import java.util.List;
 public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory {
 
     private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<BeanPostProcessor>();
+
+    /**
+     * ClassLoader to resolve bean class names with, if necessary
+     */
+    private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
     /**
      * 根据名称获得 bean 实例化对象
@@ -68,6 +74,10 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
      */
     public List<BeanPostProcessor> getBeanPostProcessors() {
         return this.beanPostProcessors;
+    }
+
+    public ClassLoader getBeanClassLoader() {
+        return this.beanClassLoader;
     }
 
 

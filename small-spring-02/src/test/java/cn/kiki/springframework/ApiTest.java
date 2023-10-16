@@ -186,5 +186,22 @@ public class ApiTest {
         System.out.println("测试结果：" + result);
     }
 
+    //加入Aware感知对象
+    @Test
+    public void test_xml4(){
+        // 1. 初始化 Bean 工厂
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
+        applicationContext.registerShutdownHook();
+
+        // 2. 获取 bean 对象调用方法
+        UserService6 userService = applicationContext.getBean("userService6", UserService6.class);
+        String result = userService.queryUserInfo();
+        System.out.println("测试结果：" + result);
+        System.out.println("ApplicationContextAware："+userService.getApplicationContext());
+        System.out.println("BeanFactoryAware："+userService.getBeanFactory());
+
+
+    }
+
 
 }
