@@ -1,10 +1,7 @@
 package cn.kiki.springframework;
 
 import cn.hutool.core.io.IoUtil;
-import cn.kiki.springframework.bean.UserDao;
-import cn.kiki.springframework.bean.UserService;
-import cn.kiki.springframework.bean.UserService1;
-import cn.kiki.springframework.bean.UserService2;
+import cn.kiki.springframework.bean.*;
 import cn.kiki.springframework.beans.PropertyValue;
 import cn.kiki.springframework.beans.PropertyValues;
 import cn.kiki.springframework.beans.factory.config.BeanDefinition;
@@ -174,6 +171,19 @@ public class ApiTest {
 
         String s = userService2.queryUserInfo();
         System.out.println(s);
+    }
+
+    //加入初始化和销毁方法
+    @Test
+    public void test_xml3() {
+        // 1.初始化 BeanFactory
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
+        applicationContext.registerShutdownHook();
+
+        // 2. 获取Bean对象调用方法
+        UserService5 userService = applicationContext.getBean("userService5", UserService5.class);
+        String result = userService.queryUserInfo();
+        System.out.println("测试结果：" + result);
     }
 
 

@@ -15,6 +15,10 @@ import java.util.Map;
  */
 public abstract class AbstractApplicationContext extends DefaultResourceLoader implements ConfigurableApplicationContext {
 
+    /**
+     * 刷新上下文容器
+     * @throws BeansException
+     */
     @Override
     public void refresh() throws BeansException {
         // 1. 创建 BeanFactory，并加载 BeanDefinition
@@ -31,12 +35,10 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
 
         // 5. 提前实例化单例Bean对象
         beanFactory.preInstantiateSingletons();
-
     }
 
     /**
-     *
-     * @param beanFactory
+     * 注册后置处理器
      */
     private void registerBeanPostProcessors(ConfigurableListableBeanFactory beanFactory) {
         Map<String, BeanFactoryPostProcessor> beanFactoryPostProcessorMap = beanFactory.getBeansOfType(BeanFactoryPostProcessor.class);
@@ -47,13 +49,22 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
 
     /**
      * beanPostProcessor 执行注册操作
-     * @param beanFactory
      */
     private void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
         Map<String, BeanPostProcessor> beanPostProcessorMap = beanFactory.getBeansOfType(BeanPostProcessor.class);
         for (BeanPostProcessor postProcessor : beanPostProcessorMap.values()) {
             beanFactory.addBeanPostProcessor(postProcessor);
         }
+    }
+
+    @Override
+    public void registerShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread(this::close));
+    }
+
+    @Override
+    public void close() {
+        getBeanFactory().destroySingletons();
     }
 
     protected abstract void refreshBeanFactory() throws BeansException;
