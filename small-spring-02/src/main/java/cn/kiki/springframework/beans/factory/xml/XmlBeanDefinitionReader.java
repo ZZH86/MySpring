@@ -89,10 +89,10 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
             String id = bean.getAttribute("id");
             String name = bean.getAttribute("name");
             String className = bean.getAttribute("class");
-
             //增加对init-method、destroy-method的读取
             String initMethod = bean.getAttribute("init-method");
             String destroyMethodName = bean.getAttribute("destroy-method");
+            String beanScope = bean.getAttribute("scope");
 
             //获取类
             Class<?> clazz = Class.forName(className);
@@ -110,6 +110,11 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
             beanDefinition.setInitMethodName(initMethod);
             beanDefinition.setDestroyMethodName(destroyMethodName);
 
+            //设置 beanDefinition 的 scope 属性
+            if(StrUtil.isNotEmpty(beanScope)){
+                beanDefinition.setScope(beanScope);
+            }
+
             //读取 PropertyValue 属性并进行填充
             for (int j = 0; j < bean.getChildNodes().getLength(); j++) {
                 Node node = bean.getChildNodes().item(j);
@@ -125,8 +130,8 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
                 String ref = property.getAttribute("ref");
 
                 //获得属性值：引入对象、值对象
-                //red 不为 null，则为 bean 属性，否则为值属性
-                Object value = StrUtil.isNotEmpty(ref) ? new BeanReference(attrName) : attrValue;
+                //ref 不为 null，则为 bean 属性，否则为值属性
+                Object value = StrUtil.isNotEmpty(ref) ? new BeanReference(ref) : attrValue;
                 //创建属性信息
                 PropertyValue propertyValue = new PropertyValue(attrName, value);
                 //添加属性信息到 beanDefinition 的属性值类

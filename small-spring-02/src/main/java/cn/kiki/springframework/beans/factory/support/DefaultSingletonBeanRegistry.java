@@ -6,6 +6,7 @@ import cn.kiki.springframework.beans.factory.config.BeanPostProcessor;
 import cn.kiki.springframework.beans.factory.config.SingletonBeanRegistry;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,9 +17,11 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public abstract class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
 
+    protected static final Object NULL_OBJECT = new Object();
+
     private final ConcurrentHashMap<String,Object> concurrentHashMap= new ConcurrentHashMap<>();
 
-    private final Map<String, DisposableBean> disposableBeans = new HashMap<>();
+    private final Map<String, DisposableBean> disposableBeans = new LinkedHashMap<>();
 
     @Override
     public Object getSingleton(String beanName) {
@@ -32,7 +35,7 @@ public abstract class DefaultSingletonBeanRegistry implements SingletonBeanRegis
         concurrentHashMap.put(beanName,singletonObject);
     }
 
-    public abstract void addBeanPostProcessor(BeanPostProcessor beanPostProcessor);
+//    public abstract void addBeanPostProcessor(BeanPostProcessor beanPostProcessor);
 
     public void registerDisposableBean(String beanName, DisposableBean bean) {
         disposableBeans.put(beanName, bean);

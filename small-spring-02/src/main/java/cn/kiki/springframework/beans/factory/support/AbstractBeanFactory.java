@@ -2,8 +2,10 @@ package cn.kiki.springframework.beans.factory.support;
 
 import cn.kiki.springframework.beans.BeansException;
 import cn.kiki.springframework.beans.factory.BeanFactory;
+import cn.kiki.springframework.beans.factory.FactoryBean;
 import cn.kiki.springframework.beans.factory.config.BeanDefinition;
 import cn.kiki.springframework.beans.factory.config.BeanPostProcessor;
+import cn.kiki.springframework.beans.factory.config.ConfigurableBeanFactory;
 import cn.kiki.springframework.util.ClassUtils;
 
 import java.util.ArrayList;
@@ -13,7 +15,7 @@ import java.util.List;
  * @Author hui cao
  * @Description: 抽象类定义模板方法
  */
-public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory {
+public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport implements ConfigurableBeanFactory {
 
     private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<BeanPostProcessor>();
 
@@ -45,11 +47,29 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
     protected <T> T doGetBean(final String name, final Object[] args) {
         Object bean = getSingleton(name);
         if (bean != null) {
-            return (T) bean;
+            // 如果是 FactoryBean，则需要调用 FactoryBean#getObject
+            return (T) getObjectForBeanInstance(bean, name);
         }
 
         BeanDefinition beanDefinition = getBeanDefinition(name);
-        return (T) createBean(name, beanDefinition, args);
+        Object beanInstance = createBean(name, beanDefinition, args);
+        return (T) getObjectForBeanInstance(beanInstance, name);
+    }
+
+    private Object getObjectForBeanInstance(Object bean, String name) {
+        // 如果不是 factoryBean ,就直接返回
+        if(!(bean instanceof FactoryBean)){
+            return bean;
+        }
+
+        Object object = getCachedObjectForFactoryBean(name);
+
+        if(object == null){
+            FactoryBean<?> factoryBean = (FactoryBean<?>) bean;
+            object = getObjectFromFactoryBean(factoryBean, name);
+        }
+
+        return object;
     }
 
     /**
