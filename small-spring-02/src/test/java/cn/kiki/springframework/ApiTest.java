@@ -14,6 +14,7 @@ import cn.kiki.springframework.common.MyBeanPostProcessor;
 import cn.kiki.springframework.context.support.ClassPathXmlApplicationContext;
 import cn.kiki.springframework.core.io.DefaultResourceLoader;
 import cn.kiki.springframework.core.io.Resource;
+import cn.kiki.springframework.event.CustomEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.openjdk.jol.info.ClassLayout;
@@ -222,6 +223,14 @@ public class ApiTest {
         System.out.println(userService01 + " 十六进制哈希：" + Integer.toHexString(userService01.hashCode()));
         System.out.println(ClassLayout.parseInstance(userService01).toPrintable());
 
+    }
+
+    @Test
+    public void test_event() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
+        applicationContext.publishEvent(new CustomEvent(applicationContext, 1019129009086763L, "成功了！"));
+
+        applicationContext.registerShutdownHook();
     }
 
 

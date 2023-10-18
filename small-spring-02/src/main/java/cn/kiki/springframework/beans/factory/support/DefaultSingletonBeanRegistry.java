@@ -31,11 +31,19 @@ public abstract class DefaultSingletonBeanRegistry implements SingletonBeanRegis
     /**
      * 增加单例对象
      */
-    protected void addSingleton(String beanName, Object singletonObject){
+//    protected void addSingleton(String beanName, Object singletonObject){
+//        concurrentHashMap.put(beanName,singletonObject);
+//    }
+
+    /**
+     * 增加单例对象
+     */
+    @Override
+    public void registerSingleton(String beanName, Object singletonObject) {
         concurrentHashMap.put(beanName,singletonObject);
     }
 
-//    public abstract void addBeanPostProcessor(BeanPostProcessor beanPostProcessor);
+    //    public abstract void addBeanPostProcessor(BeanPostProcessor beanPostProcessor);
 
     public void registerDisposableBean(String beanName, DisposableBean bean) {
         disposableBeans.put(beanName, bean);

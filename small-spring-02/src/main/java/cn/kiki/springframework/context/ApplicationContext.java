@@ -1,6 +1,8 @@
 package cn.kiki.springframework.context;
 
+import cn.kiki.springframework.beans.factory.HierarchicalBeanFactory;
 import cn.kiki.springframework.beans.factory.ListableBeanFactory;
+import cn.kiki.springframework.core.io.ResourceLoader;
 
 /**
  * @Author hui cao
@@ -9,5 +11,5 @@ import cn.kiki.springframework.beans.factory.ListableBeanFactory;
  *    This is read-only while the application is running, but may be
  *    reloaded if the implementation supports this.
  */
-public interface ApplicationContext extends ListableBeanFactory {
+public interface ApplicationContext extends ListableBeanFactory, HierarchicalBeanFactory, ResourceLoader, ApplicationEventPublisher {
 }
