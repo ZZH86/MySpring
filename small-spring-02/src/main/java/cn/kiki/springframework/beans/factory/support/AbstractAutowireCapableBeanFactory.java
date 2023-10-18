@@ -79,7 +79,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             }
         }
 
-        // 1. 执行 BeanPostProcessor Before 处理
+        // 1. 执行 BeanPostProcessor Before 处理，这里直接遍历所有的BeanPostProcessor集合，处理器自己会根据bean的类型进行相应的处理
         Object wrappedBean = applyBeanPostProcessorsBeforeInitialization(bean, beanName);
 
         // 初始化

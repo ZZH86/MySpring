@@ -44,19 +44,19 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
      * 注册后置处理器
      */
     private void registerBeanPostProcessors(ConfigurableListableBeanFactory beanFactory) {
-        Map<String, BeanFactoryPostProcessor> beanFactoryPostProcessorMap = beanFactory.getBeansOfType(BeanFactoryPostProcessor.class);
-        for (Map.Entry<String, BeanFactoryPostProcessor> processorEntry : beanFactoryPostProcessorMap.entrySet()) {
-            processorEntry.getValue().postProcessBeanFactory(beanFactory);
+        Map<String, BeanPostProcessor> beanPostProcessorMap = beanFactory.getBeansOfType(BeanPostProcessor.class);
+        for (BeanPostProcessor postProcessor : beanPostProcessorMap.values()) {
+            beanFactory.addBeanPostProcessor(postProcessor);
         }
     }
 
     /**
-     * beanPostProcessor 执行注册操作
+     * BeanFactoryPostProcessor 进行属性修改
      */
     private void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
-        Map<String, BeanPostProcessor> beanPostProcessorMap = beanFactory.getBeansOfType(BeanPostProcessor.class);
-        for (BeanPostProcessor postProcessor : beanPostProcessorMap.values()) {
-            beanFactory.addBeanPostProcessor(postProcessor);
+        Map<String, BeanFactoryPostProcessor> beanFactoryPostProcessorMap = beanFactory.getBeansOfType(BeanFactoryPostProcessor.class);
+        for (Map.Entry<String, BeanFactoryPostProcessor> processorEntry : beanFactoryPostProcessorMap.entrySet()) {
+            processorEntry.getValue().postProcessBeanFactory(beanFactory);
         }
     }
 
