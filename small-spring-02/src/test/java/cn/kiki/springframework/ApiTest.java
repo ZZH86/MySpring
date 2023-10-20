@@ -1,6 +1,13 @@
 package cn.kiki.springframework;
 
 import cn.hutool.core.io.IoUtil;
+import cn.kiki.springframework.aop.AdvisedSupport;
+import cn.kiki.springframework.aop.TargetSource;
+import cn.kiki.springframework.aop.aspectj.AspectJExpressionPointcut;
+import cn.kiki.springframework.aop.framework.Cglib2AopProxy;
+import cn.kiki.springframework.aop.framework.JdkDynamicAopProxy;
+import cn.kiki.springframework.aopTest.IUserService;
+import cn.kiki.springframework.aopTest.UserServiceInterceptor;
 import cn.kiki.springframework.bean.*;
 import cn.kiki.springframework.beans.PropertyValue;
 import cn.kiki.springframework.beans.PropertyValues;
@@ -21,6 +28,7 @@ import org.openjdk.jol.info.ClassLayout;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 
 /**
  * @Author hui cao
@@ -233,5 +241,39 @@ public class ApiTest {
         applicationContext.registerShutdownHook();
     }
 
+    @Test
+    public void test_aop() throws NoSuchMethodException {
+        AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut("execution(* cn.kiki.springframework.bean.UserService.*(..))");
+        Class<UserService> clazz = UserService.class;
+        Method method = clazz.getDeclaredMethod("queryUserInfo");
 
+        System.out.println(pointcut.matches(clazz));
+        System.out.println(pointcut.matches(method, clazz));
+
+        // true、true
+    }
+
+
+    @Test
+    public void test_dynamic() {
+        // 目标对象
+        cn.kiki.springframework.aopTest.UserService userService = new cn.kiki.springframework.aopTest.UserService();
+
+        // 组装代理信息
+        AdvisedSupport advisedSupport = new AdvisedSupport();
+        advisedSupport.setTargetSource(new TargetSource(userService));
+        advisedSupport.setMethodInterceptor(new UserServiceInterceptor());
+        advisedSupport.setMethodMatcher(new AspectJExpressionPointcut("execution(* cn.kiki.springframework.aopTest.IUserService.*(..))"));
+
+        // 代理对象(JdkDynamicAopProxy)
+        IUserService proxy =(IUserService) new JdkDynamicAopProxy(advisedSupport).getProxy();
+        // 测试调用
+        System.out.println("测试结果：" + proxy.queryUserInfo());
+
+        // 代理对象(Cglib2AopProxy)
+        IUserService proxy_cglib = (IUserService) new Cglib2AopProxy(advisedSupport).getProxy();
+        // 测试调用
+        System.out.println("测试结果：" + proxy_cglib.register("花花"));
+
+    }
 }
