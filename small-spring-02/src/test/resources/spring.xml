@@ -1,24 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--<beans>-->
-
-<!--    <bean id="userService7" class="cn.kiki.springframework.bean.UserService7" scope="prototype">-->
-<!--        <property name="uId" value="10001"/>-->
-<!--        <property name="company" value="腾讯"/>-->
-<!--        <property name="location" value="深圳"/>-->
-<!--        <property name="userDao" ref="proxyUserDao"/>-->
-<!--    </bean>-->
-
-<!--    <bean id="proxyUserDao" class="cn.kiki.springframework.bean.ProxyBeanFactory"/>-->
-
-<!--</beans>-->
-
-
 <beans>
 
-    <bean class="cn.kiki.springframework.event.ContextRefreshedEventListener"/>
+    <bean id="userService" class="cn.kiki.springframework.aopTest.UserService"/>
 
-    <bean class="cn.kiki.springframework.event.CustomEventListener"/>
+    <bean class="cn.kiki.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
 
-    <bean class="cn.kiki.springframework.event.ContextClosedEventListener"/>
+    <bean id="beforeAdvice" class="cn.kiki.springframework.aopTest.UserServiceBeforeAdvice"/>
+
+    <bean id="methodInterceptor" class="cn.kiki.springframework.aop.framework.adapter.MethodBeforeAdviceInterceptor">
+        <property name="advice" ref="beforeAdvice"/>
+    </bean>
+
+    <bean id="pointcutAdvisor" class="cn.kiki.springframework.aop.aspectj.AspectJExpressionPointcutAdvisor">
+        <property name="expression" value="execution(* cn.kiki.springframework.aopTest.IUserService.*(..))"/>
+        <property name="advice" ref="methodInterceptor"/>
+    </bean>
 
 </beans>
