@@ -1,5 +1,7 @@
 package cn.kiki.springframework.aop;
 
+import cn.kiki.springframework.util.ClassUtils;
+
 /**
  * @Author hui cao
  * @Description: 被代理的目标对象
@@ -19,8 +21,10 @@ public class TargetSource {
      * target class.
      * @return the type of targets returned by this {@link TargetSource}
      */
-    public Class<?>[] getTargetClass(){
-        return this.target.getClass().getInterfaces();
+    public Class<?>[] getTargetClass() {
+        Class<?> clazz = this.target.getClass();
+        clazz = ClassUtils.isCglibProxyClass(clazz) ? clazz.getSuperclass() : clazz;
+        return clazz.getInterfaces();
     }
 
     /**
