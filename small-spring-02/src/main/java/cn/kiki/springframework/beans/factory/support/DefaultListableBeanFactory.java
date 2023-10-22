@@ -4,7 +4,9 @@ import cn.kiki.springframework.beans.BeansException;
 import cn.kiki.springframework.beans.factory.ConfigurableListableBeanFactory;
 import cn.kiki.springframework.beans.factory.config.BeanDefinition;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -54,6 +56,29 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
             }
         });
         return map;
+    }
+
+    /**
+     * 根据类的类型获取 bean ,遍历所有 beanDefinition，利用 isAssignableFrom 判断，满足就加入，最后判断时候只有唯一一个，
+     *   是就利用getBean(beanNames.get(0), requiredType)，否则抛出异常。
+     * @param requiredType
+     * @return
+     * @param <T>
+     * @throws BeansException
+     */
+    @Override
+    public <T> T getBean(Class<T> requiredType) throws BeansException {
+        List<String> beanNames = new ArrayList<>();
+        for (Map.Entry<String, BeanDefinition> entry : beanDefinitionMap.entrySet()) {
+            Class beanClass = entry.getValue().getBeanClass();
+            if (requiredType.isAssignableFrom(beanClass)) {
+                beanNames.add(entry.getKey());
+            }
+        }
+        if (1 == beanNames.size()) {
+            return getBean(beanNames.get(0), requiredType);
+        }
+        throw new BeansException(requiredType + "expected single bean but found " + beanNames.size() + ": " + beanNames);
     }
 
     @Override

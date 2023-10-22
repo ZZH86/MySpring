@@ -1,6 +1,7 @@
 package cn.kiki.springframework.context.annotation;
 
 import cn.hutool.core.util.StrUtil;
+import cn.kiki.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
 import cn.kiki.springframework.beans.factory.config.BeanDefinition;
 import cn.kiki.springframework.beans.factory.support.BeanDefinitionRegistry;
 import cn.kiki.springframework.stereotype.Component;
@@ -31,6 +32,11 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
                 beanDefinitionRegistry.registerBeanDefinition(determineBeanName(beanDefinition), beanDefinition);
             }
         }
+
+        // 注册处理注解的 BeanPostProcessor（@Autowired、@Value）
+        // 由于AutowiredAnnotationBeanPostProcessor并没有标注@Component,所以是无法在类扫描时注入到beanFactory中的,此处需要我们手动进行注册
+        beanDefinitionRegistry.registerBeanDefinition("cn.kiki.springframework.context.annotation.internalAutowiredAnnotationProcessor", new BeanDefinition(AutowiredAnnotationBeanPostProcessor.class));
+
     }
 
     /**

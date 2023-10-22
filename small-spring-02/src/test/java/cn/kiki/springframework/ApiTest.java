@@ -6,6 +6,7 @@ import cn.kiki.springframework.aop.TargetSource;
 import cn.kiki.springframework.aop.aspectj.AspectJExpressionPointcut;
 import cn.kiki.springframework.aop.framework.Cglib2AopProxy;
 import cn.kiki.springframework.aop.framework.JdkDynamicAopProxy;
+import cn.kiki.springframework.aopAnnotationEnter.IUserService2;
 import cn.kiki.springframework.aopAutoScanBean.IUserService1;
 import cn.kiki.springframework.aopTest.IUserService;
 import cn.kiki.springframework.aopTest.UserServiceInterceptor;
@@ -295,6 +296,13 @@ public class ApiTest {
     public void test_scan() {
         ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring-scan.xml");
         IUserService1 userService = applicationContext.getBean("userService", IUserService1.class);
+        System.out.println("测试结果：" + userService.queryUserInfo());
+    }
+
+    @Test
+    public void test_scan2() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
+        IUserService2 userService = applicationContext.getBean("userService", IUserService2.class);
         System.out.println("测试结果：" + userService.queryUserInfo());
     }
 
