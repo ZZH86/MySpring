@@ -34,7 +34,7 @@ public abstract class DefaultSingletonBeanRegistry implements SingletonBeanRegis
     @Override
     public Object getSingleton(String beanName) {
         // 双检加锁实现单例
-        Object singletonObject = concurrentHashMap.get(beanName);
+         Object singletonObject = concurrentHashMap.get(beanName);
         if(null == singletonObject){
             synchronized(this){
                 singletonObject = concurrentHashMap.get(beanName);
