@@ -31,10 +31,12 @@ public abstract class DefaultSingletonBeanRegistry implements SingletonBeanRegis
 
     private final Map<String, DisposableBean> disposableBeans = new LinkedHashMap<>();
 
+    public volatile Object singletonObject;
+
     @Override
     public Object getSingleton(String beanName) {
         // 双检加锁实现单例
-         Object singletonObject = concurrentHashMap.get(beanName);
+        singletonObject = concurrentHashMap.get(beanName);
         if(null == singletonObject){
             synchronized(this){
                 singletonObject = concurrentHashMap.get(beanName);
